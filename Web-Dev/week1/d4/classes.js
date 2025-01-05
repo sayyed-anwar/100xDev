@@ -39,4 +39,4 @@ const circle = new Circle(5,  "blue");
 
 console.log("Area : ", circle.area());
 
-circle.paint();
+circle.paint();// Paint the circle
