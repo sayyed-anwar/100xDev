@@ -1,19 +1,20 @@
 const fs = require("fs");
 
-function expensiveOperation() {
+function expensiveOperations() {
   let count = 0;
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 1000000000; i++) {
     count += i;
   }
-  console.log("Expensive operation completed:", count);
+  return count;
 }
 
 fs.readFile("./text.md", "utf-8", (err, data) => {
   if (err) {
-    console.error("Error reading file:", err);
+    console.error(err);
     return;
   }
+  console.log(" File Data: ",data);
 
-  console.log(data);
-  expensiveOperation();
+  let expOprData= expensiveOperations();
+  console.log("Expensive Operations Result:", expOprData);
 });
