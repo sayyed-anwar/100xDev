@@ -1,1 +1,1 @@
-this  is sample text 
+ this is a text file data after updation
