@@ -73,3 +73,91 @@ let user: userTypes = {
 };
 
 yo(user);
+
+// extends
+class Shape {
+  area() {
+    console.log("area");
+  }
+}
+
+class Rectangle extends Shape {
+  width: number;
+  height: number;
+  constructor(width: number, height: number) {
+    super();
+    this.width = width;
+    this.height = height;
+  }
+}
+
+const rectangle = new Rectangle(5, 10);
+
+rectangle.area(); // Outputs: area
+
+// difference between syntax
+
+interface UserInterf {
+  name: string;
+  age: number;
+}
+
+interface ManagerInterf {
+  department: string;
+
+}
+
+// interface ManagerInterf | UserInterf  //in the interface this is not allowed
+
+type UserType = {
+  name: string;
+  age: number;
+};
+
+// ============== Union  =========== //
+
+type Employee = {
+  name: string;
+  age: number;
+};
+
+type Manager = {
+  name: string;
+  department: string;
+};
+
+// union between Employee and Manager (A union can have either or all the values)
+type TeamLeadUnion = Employee | Manager;
+// union between Employee and Manager
+
+let e: Employee = {
+  name: "anwar",
+  age: 20,
+};
+
+let m: Manager = {
+  name: "anwar",
+  department: "IT",
+};
+
+
+
+let tl_u: TeamLeadUnion = {
+  name: "anwar",
+  age: 20,
+  // department: "IT",
+  //  this can have properties of employee or manager or both
+};
+
+
+// Intersection between Employee and Manager (A Intersection should have all the values)
+type TeamLeadIntersection = Employee & Manager;
+// Intersection between Employee and Manager
+
+
+let tl_i :TeamLeadIntersection = {
+  name: "anwar",
+  age: 20,
+  department: "IT",
+  //  this should have both properties of employee and manager 
+}
