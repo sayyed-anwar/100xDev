@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const db_1 = require("./db");
+const middlewares_1 = require("./middlewares");
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 const SECRET_KEY = "your_secret_key";
@@ -29,17 +30,50 @@ app.post("/api/v1/auth/signup", (req, res) => __awaiter(void 0, void 0, void 0, 
     }
 }));
 app.post("/api/v1/auth/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password } = req.body;
+    const { email, password, _id } = req.body;
     const user = yield db_1.UserModel.findOne({ email, password });
+    console.log(user, "User id");
     if (!user) {
         res.status(401).json({ message: "Invalid credentials" });
     }
-    const token = jsonwebtoken_1.default.sign({ email }, SECRET_KEY);
+    const token = jsonwebtoken_1.default.sign({ id: user === null || user === void 0 ? void 0 : user._id }, SECRET_KEY);
     res.json({ token });
 }));
-app.post("/api/v1/content", (req, res) => { });
-app.get("/api/v1/content", (req, res) => { });
-app.patch("/api/v1/content", (req, res) => { });
+app.post("/api/v1/content", middlewares_1.userMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { title, content, link, tags } = req.body;
+        yield db_1.ContentModel.create({
+            title,
+            content,
+            link,
+            tags: [],
+            //@ts-ignore
+            userId: req.userId,
+        });
+        res.json({ message: "Content created" });
+        return;
+    }
+    catch (error) {
+        res.json({ message: "Faild to Content" });
+    }
+}));
+app.get("/api/v1/content", middlewares_1.userMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        //@ts-ignore
+        const userId = req.userId;
+        const Content = yield db_1.ContentModel.find({ userId: userId }).populate("userId", "username");
+        res.json({ Content });
+    }
+    catch (error) {
+        res.json({ message: "Error fetching content" });
+    }
+}));
+app.patch("/api/v1/content", middlewares_1.userMiddleware, (req, res) => {
+    //@ts-ignore
+    const userId = req.userId;
+    const data = db_1.ContentModel.find({ userId });
+    res.json({ message: "Content updated" });
+});
 app.delete("/api/v1/content", (req, res) => { });
 app.post("/api/v1/brain/share", (req, res) => { });
 app.get("/api/v1/brain/:id", (req, res) => { });

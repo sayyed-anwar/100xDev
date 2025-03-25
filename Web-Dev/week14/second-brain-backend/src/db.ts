@@ -8,3 +8,16 @@ const userSchema = new Schema({
 });
 
 export const UserModel = model("User", userSchema);
+
+
+
+const contentSchema = new Schema({
+  title :{type: "string", required: true},
+  content : {type: "string", required: true},
+  link : {type: "string"},
+  userId: {type: Schema.Types.ObjectId, ref: "User"},
+  tags : [{type: Schema.Types.ObjectId, ref: "Tag"}]
+});
+
+
+export const ContentModel = model("Content", contentSchema);
