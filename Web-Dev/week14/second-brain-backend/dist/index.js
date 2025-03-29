@@ -68,15 +68,24 @@ app.get("/api/v1/content", middlewares_1.userMiddleware, (req, res) => __awaiter
         res.json({ message: "Error fetching content" });
     }
 }));
-app.patch("/api/v1/content", middlewares_1.userMiddleware, (req, res) => {
+app.patch("/api/v1/content", middlewares_1.userMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //@ts-ignore
     const userId = req.userId;
-    const data = db_1.ContentModel.find({ userId });
+    const contentId = req.body.contentId;
+    const data = yield db_1.ContentModel.findOneAndUpdate({ userId, contentId });
     res.json({ message: "Content updated" });
-});
-app.delete("/api/v1/content", (req, res) => { });
+}));
+app.delete("/api/v1/content", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const contentId = req.body.contentId;
+    yield db_1.ContentModel.deleteOne({
+        contentId,
+        //@ts-ignore
+        userId: req.userId,
+    });
+    res.json({ message: "Content deleted" });
+}));
 app.post("/api/v1/brain/share", (req, res) => { });
-app.get("/api/v1/brain/:id", (req, res) => { });
+app.get("/api/v1/brain/:shareLink", (req, res) => { });
 app.listen(3000, () => {
     console.log("Server running on port 3000");
 });
