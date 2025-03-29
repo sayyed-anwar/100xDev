@@ -44,26 +44,39 @@ app.post("/api/v1/content", userMiddleware, async (req, res) => {
     res.json({ message: "Faild to Content" });
   }
 });
-app.get("/api/v1/content", userMiddleware,async (req, res) => {
+app.get("/api/v1/content", userMiddleware, async (req, res) => {
   try {
     //@ts-ignore
     const userId = req.userId;
-    const Content =await ContentModel.find({ userId: userId }).populate("userId", "username");
+    const Content = await ContentModel.find({ userId: userId }).populate(
+      "userId",
+      "username"
+    );
     res.json({ Content });
   } catch (error) {
     res.json({ message: "Error fetching content" });
   }
 });
-app.patch("/api/v1/content", userMiddleware, (req, res) => {
+app.patch("/api/v1/content", userMiddleware, async (req, res) => {
   //@ts-ignore
   const userId = req.userId;
-  const data = ContentModel.find({ userId });
+  const contentId = req.body.contentId;
+  const data = await ContentModel.findOneAndUpdate({ userId, contentId });
   res.json({ message: "Content updated" });
 });
-app.delete("/api/v1/content", (req, res) => {});
+app.delete("/api/v1/content", async (req, res) => {
+  const contentId = req.body.contentId;
+  await ContentModel.deleteOne({
+    contentId,
+    //@ts-ignore
+    userId: req.userId,
+  });
+
+  res.json({ message: "Content deleted" });
+});
 
 app.post("/api/v1/brain/share", (req, res) => {});
-app.get("/api/v1/brain/:id", (req, res) => {});
+app.get("/api/v1/brain/:shareLink", (req, res) => {});
 
 app.listen(3000, () => {
   console.log("Server running on port 3000");
