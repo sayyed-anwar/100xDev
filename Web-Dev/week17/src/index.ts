@@ -6,5 +6,8 @@ const pgClient = new Client(
 
 async function main() {
   await pgClient.connect();
+  console.log("connected to db");
+  const res = await pgClient.query("SELECT * FROM users");
+  console.log(res.rows); // Output: rows from the query
 }
 main();
